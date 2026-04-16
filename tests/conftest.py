@@ -30,3 +30,8 @@ def mock_price_record(sample_exchange_id):
         "timestamp": datetime.now(),
         "exchange_id": sample_exchange_id
     }
+
+
+@pytest.fixture()
+def finance_api_bearer_token() -> str:
+    return "secret-123"
