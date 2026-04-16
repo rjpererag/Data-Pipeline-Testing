@@ -3,8 +3,7 @@ from src.processors.fx_converter import FXConverter
 
 
 @pytest.fixture()
-def converter():
-    rates = {"EUR": 1.08, "GBP": 1.27, "JPY": 0.0067}
+def converter(rates):
     return FXConverter(rates=rates)
 
 
