@@ -1,27 +1,15 @@
-_FAKE_VALID_TOKENS = {
-    "valid_bearer1234": True,
-    "not_valid_bearer567": False,
-    "parameta-secret-123": True,
-    "secret-123": True,
-}
+from .db_model.user_db_manager import DBUserManager, User
 
 class Authorizer:
 
     def __init__(self):
-        self.valid_tokens = self.__get_valid_tokens()
+        self.user_db_manager = DBUserManager()
 
-    @staticmethod
-    def __get_valid_tokens() -> dict:
-        return _FAKE_VALID_TOKENS
-
-    def lookup_token(self, token: str) -> bool:
-        if token not in self.valid_tokens:
-            return False
-        status = self.valid_tokens.get(token, False)
-        return status
-
+    def _get_user(self, token: str) -> User:
+        return self.user_db_manager.get_user_by_token(token=token)
 
     def check_auth(self, bearer_token: str) -> bool:
         if isinstance(bearer_token, str):
-            return self.lookup_token(bearer_token)
+            user = self._get_user(token=bearer_token)
+            return user.is_active
         return False
