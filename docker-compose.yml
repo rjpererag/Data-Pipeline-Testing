@@ -1,0 +1,22 @@
+services:
+
+  finance-api:
+    build:
+      context: .
+      dockerfile: Dockerfile-finance-api
+    ports:
+      - "5001:5001"
+
+  finance-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile-finance-pipeline
+
+    environment:
+      - FINANCE_PIPELINE_BASE_URL=http://finance-api:5001
+
+    env_file:
+      - .env
+
+    depends_on:
+      - finance-api
