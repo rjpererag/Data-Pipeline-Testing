@@ -1,0 +1,8 @@
+services:
+
+  finance-api:
+    build:
+      context: .
+      dockerfile: Dockerfile-finance-api
+    ports:
+      - "5001:5001"
