@@ -6,3 +6,14 @@ services:
       dockerfile: Dockerfile-finance-api
     ports:
       - "5001:5001"
+
+  finance-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile-finance-pipeline
+
+    env_file:
+      - .env
+
+    depends_on:
+      - finance-api
