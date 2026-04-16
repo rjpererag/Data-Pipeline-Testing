@@ -1,5 +1,23 @@
 services:
 
+  postgres-users:
+    build:
+      context: infra/postgres/users
+      dockerfile: Dockerfile
+    container_name: postgres-users
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=postgres_users
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_PORT=5433
+    volumes:
+      - postgres_users_data:/var/lib/postgresql/data
+
   finance-api:
     build:
       context: .
@@ -20,3 +38,5 @@ services:
 
     depends_on:
       - finance-api
+volumes:
+  postgres_users_data:
