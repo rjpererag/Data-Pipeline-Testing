@@ -16,5 +16,5 @@ class User(Base):
     token_hash = Column(String, unique=True, nullable=False)
     is_active = Column(Boolean, unique=True, nullable=False)
     expires_at = Column(DateTime(timezone=True), nullable=False)
-    created_at = Column(DateTime(timezone=True), nullable=False)
-    updated_at = Column(Boolean, unique=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, unique=True, server_default=func.now(), nullable=False)
