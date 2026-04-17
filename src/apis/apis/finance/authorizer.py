@@ -5,6 +5,7 @@ from dataclasses import dataclass
 class Authorization:
     error: str | None = None
     status_code: int | None = None
+    status: str | None = None
     is_authorized: bool = False
 
 class Authorizer:
@@ -19,7 +20,6 @@ class Authorizer:
         return self.user_db_manager.get_user_by_token(token=token)
 
     def check_auth(self, bearer_token: str) -> Authorization:
-
         authorization = Authorization()
         try:
             if (not isinstance(bearer_token, str)) or (not bearer_token):
@@ -32,6 +32,7 @@ class Authorizer:
             if user and user.is_active:
                 authorization.is_authorized = True
                 authorization.status_code = 200
+                authorization.status = "ok"
 
             else:
                 authorization.is_authorized = False

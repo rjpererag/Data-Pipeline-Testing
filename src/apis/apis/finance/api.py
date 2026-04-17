@@ -1,11 +1,14 @@
 from flask import Flask, request, jsonify
 from .authorizer import Authorizer
+from .db_model.user_db_manager import DBUserManager
 from .functions.price import get_random_price
+from dataclasses import asdict
 
 
 app = Flask(__name__)
 
-AUTHORIZER = Authorizer()
+USER_DB_MANAGER = DBUserManager()
+AUTHORIZER = Authorizer(db_manager=USER_DB_MANAGER)
 
 @app.route("/auth/status", methods=["GET"])
 def check_auth():
@@ -15,12 +18,8 @@ def check_auth():
         return jsonify({"message": "Missing or malformed Authorization header"}), 401
 
     bearer_token = auth_header.split(" ")[1]
-    is_auth = AUTHORIZER.check_auth(bearer_token)
-
-    if not is_auth:
-        return jsonify({"error": "Unauthorized"}), 401
-
-    return jsonify({"status": "ok"}), 200
+    authorization = AUTHORIZER.check_auth(bearer_token)
+    return jsonify(**asdict(authorization)), authorization.status_code
 
 
 @app.route("/prices/<symbol>", methods=["GET"])
