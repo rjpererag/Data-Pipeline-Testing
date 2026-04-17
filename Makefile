@@ -4,6 +4,7 @@ POSTGRES_USERS_USER=admin
 POSTGRES_USERS_PASSWORD=admin
 POSTGRES_USERS_PORT=5432
 
+# USER DB ------------------------------------------------------
 
 .PHONY: start-user-db
 start-user-db:
@@ -43,3 +44,15 @@ user-db-populate:
 		env PGPASSWORD=$(POSTGRES_USERS_PASSWORD) \
 		psql -U $(POSTGRES_USERS_USER) -d $(POSTGRES_USERS_DB) < dev_scripts/populate.sql
 	@echo "Done."
+
+
+# API  ------------------------------------------------------
+API_URL ?=  http://127.0.0.1:5001
+TOKEN ?= parameta-dev-2026
+ENDPOINT = /auth/status
+
+.PHONY: api-auth
+api-auth:
+	@echo "Verifying Authorization against $(API_URL)..."
+	curl -H "Authorization: Bearer $(TOKEN)" $(API_URL)$(ENDPOINT)
+
