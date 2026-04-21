@@ -1,9 +1,11 @@
+from src.apis.apis.finance.db_model.user_db_manager import DBUserManager
 from src.processors.fx_converter import FXConverter
 from src.processors.symbol_sanitizer import SymbolSanitizer
 from src.apis.apis.finance.app import app
 from src.apis.clients.finance import FinanceAPIClient
 from src.pipelines.finance.pipeline import FinancePipeline
 from src.pipelines.finance.pipeline_executor import run_pipeline
+from src.apis.apis.finance.authorizer import Authorizer
 
 
 def convert():
@@ -21,14 +23,21 @@ def sanitize():
 	print(sanitizer.sanitize(symbol=None))
 
 
+def user_authorizer():
+	db_manager = DBUserManager()
+	authorizer = Authorizer(db_manager=db_manager)
+	is_auth = authorizer.check_auth(bearer_token="parameta-dev-2026")
+	print(is_auth)
+
+
 def finance_api():
 
-	# endpoint = "/auth/status"
-	endpoint = "/prices/usdt"
+	endpoint = "/auth/status"
+	# endpoint = "/prices/usdt"
 
 	with app.test_client() as client:
 
-		headers = {"Authorization": "Bearer secret-123"}
+		headers = {"Authorization": "Bearer parameta-dev-2026"}
 		response = client.get(
 			endpoint,
 			headers=headers,
@@ -67,5 +76,5 @@ def finance_pipeline_executor():
 
 
 if __name__ == "__main__":
-	finance_pipeline_executor()
+	finance_api()
 
