@@ -1,0 +1,17 @@
+services:
+
+  finance-api:
+    image: ${DOCKERHUB_USERNAME}/finance-api:latest
+    ports:
+      - "5001:5001"
+
+  finance-pipeline:
+    image: ${DOCKERHUB_USERNAME}/finance-pipeline:latest
+    environment:
+      - FINANCE_PIPELINE_BASE_URL=http://finance-api:5001
+
+    env_file:
+      - .env
+
+    depends_on:
+      - finance-api
