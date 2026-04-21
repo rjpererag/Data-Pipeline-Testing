@@ -34,4 +34,4 @@ def mock_price_record(sample_exchange_id):
 
 @pytest.fixture()
 def finance_api_bearer_token() -> str:
-    return "secret-123"
+    return "parameta-dev-2026"
