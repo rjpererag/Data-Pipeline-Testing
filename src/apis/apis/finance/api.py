@@ -1,16 +1,11 @@
-from flask import Flask, request, jsonify
-from .authorizer import Authorizer
-from .db_model.user_db_manager import DBUserManager
+from flask import Blueprint, current_app, request, jsonify
 from .functions.price import get_random_price
 from dataclasses import asdict
 
 
-app = Flask(__name__)
+finance_api_bp = Blueprint('finance_api', __name__)
 
-USER_DB_MANAGER = DBUserManager()
-AUTHORIZER = Authorizer(db_manager=USER_DB_MANAGER)
-
-@app.route("/auth/status", methods=["GET"])
+@finance_api_bp.route("/auth/status", methods=["GET"])
 def check_auth():
     auth_header = request.headers.get("Authorization")
 
@@ -18,11 +13,11 @@ def check_auth():
         return jsonify({"message": "Missing or malformed Authorization header"}), 401
 
     bearer_token = auth_header.split(" ")[1]
-    authorization = AUTHORIZER.check_auth(bearer_token)
+    authorization = current_app.authorizer.check_auth(bearer_token)
     return jsonify(**asdict(authorization)), authorization.status_code
 
 
-@app.route("/prices/<symbol>", methods=["GET"])
+@finance_api_bp.route("/prices/<symbol>", methods=["GET"])
 def get_price(symbol: str):
     price = get_random_price(symbol=symbol)
 
@@ -32,7 +27,7 @@ def get_price(symbol: str):
     return jsonify({**price}), 200
 
 
-@app.route("/ingest", methods=["POST"])
+@finance_api_bp.route("/ingest", methods=["POST"])
 def ingest_data():
     pass
 
